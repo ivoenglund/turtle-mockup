@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Turtle Studio — Grupper &amp; kontakter</title>
+<style>
+  :root{--cream:#FBF6EC;--green:#243A17;--green2:#2E4A1E;--leaf:#7FB36F;--leaf2:#4E944F;
+        --yellow:#FFE800;--ink:#1C2A14;--bg:#F1EEE1;--line:#E2DCC9;--mut:#6b7560;}
+  *{box-sizing:border-box;font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;}
+  body{margin:0;background:var(--bg);color:var(--ink);}
+  .top{height:58px;background:var(--green);color:#EAF1DE;display:flex;align-items:center;gap:16px;padding:0 18px;}
+  .brand{font-weight:800;font-size:18px;color:#fff;}.brand b{color:var(--yellow);}
+  .top .sp{flex:1;}
+  .acct{background:#34502a;border:1px solid #46603a;border-radius:8px;padding:6px 12px;font-size:14px;}
+  .btn{border:none;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;}
+  .btn.ghost{background:transparent;color:#EAF1DE;border:1px solid #5a7349;}
+  .btn.pub{background:var(--yellow);color:#3a3000;}
+  .wrap{display:flex;min-height:calc(100vh - 58px);}
+  .side{width:248px;background:#fff;border-right:1px solid var(--line);padding:12px 8px;font-size:14.5px;}
+  .lbl{font-size:11px;letter-spacing:.5px;color:var(--mut);text-transform:uppercase;margin:10px 10px 6px;}
+  .row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;color:#33402a;}
+  .row:hover{background:#F4F1E6;}
+  .row.active{background:#EAF3E2;color:var(--green2);font-weight:700;}
+  .row .ct{margin-left:auto;font-size:12px;color:var(--mut);}
+  .sub{padding-left:26px;}
+  .arr{width:14px;display:inline-block;color:var(--mut);font-size:11px;}
+  .addg{color:var(--leaf2);font-weight:700;padding:8px 10px;cursor:pointer;font-size:14px;}
+  .main{flex:1;padding:18px 24px;}
+  .crumb{font-size:13px;color:var(--mut);margin-bottom:2px;}
+  h1{font-size:21px;margin:0 0 12px;}
+  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:18px;}
+  .tab{padding:9px 14px;font-size:14px;cursor:pointer;color:#4a553f;border-bottom:3px solid transparent;}
+  .tab.active{color:var(--green2);font-weight:700;border-bottom-color:var(--yellow);}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px 20px;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);}
+  th{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.4px;}
+  .tag{display:inline-block;background:#EAF3E2;color:var(--green2);border-radius:20px;padding:2px 9px;font-size:11.5px;margin:1px 2px;}
+  .tag.alt{background:#eef3fb;color:#26527f;}
+  .tag.alt2{background:#fbeee9;color:#9a4a3a;}
+  .self{font-size:12px;color:var(--leaf2);font-weight:700;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px;}.ok{background:var(--leaf2);}.no{background:#d9b24a;}
+  .help{font-size:12.5px;color:var(--mut);margin-top:10px;}
+  .cols{display:flex;gap:22px;align-items:flex-start;}
+  .fld{margin-bottom:15px;}.fld label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:6px;}
+  .toggleRow{display:flex;align-items:center;gap:9px;font-size:14px;padding:6px 0;}
+  .tog{width:38px;height:22px;border-radius:12px;background:var(--leaf2);position:relative;flex:none;cursor:pointer;}
+  .tog::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:2px;right:2px;}
+  .tog.off{background:#cfd3c8;}.tog.off::after{right:auto;left:2px;}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+  .seg span{padding:8px 14px;font-size:13px;cursor:pointer;}
+  .seg span.on{background:var(--green2);color:#fff;font-weight:700;}
+  .big{width:100%;background:linear-gradient(90deg,#2E4A1E,#4E944F);color:#fff;border:none;border-radius:11px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;margin-top:8px;}
+  .pick{display:flex;align-items:center;gap:9px;font-size:14px;padding:6px 0;}
+  .pick input{width:17px;height:17px;}
+  /* map */
+  .map{position:relative;height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--line);
+       background:linear-gradient(135deg,#dfe9d6,#e9eef4);}
+  .map .road{position:absolute;background:#fff;opacity:.7;}
+  .pin{position:absolute;transform:translate(-50%,-100%);font-size:24px;}
+  .pin small{display:block;font-size:10px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 5px;transform:translateY(-4px);color:var(--ink);}
+  .maptag{position:absolute;top:10px;left:10px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;}
+  .hide{display:none;}
+  .selbox{background:#EAF3E2;border:1px solid var(--leaf);border-radius:9px;padding:11px 12px;font-size:13.5px;color:var(--green2);margin-bottom:14px;}
+</style></head>
+<body>
+<div class="top">
+  <div class="brand">🐢 Turtle <b>Studio</b></div>
+  <div class="sp"></div>
+  <div class="acct">👤 Ivo · privat konto</div>
+  <button class="btn ghost">Förhandsgranska</button>
+  <button class="btn pub">Publicera</button>
+</div>
+<div class="wrap">
+  <!-- SIDEBAR: contact pool + group tree -->
+  <div class="side">
+    <div class="lbl">Pool</div>
+    <div class="row"><span>🗂️</span> Mina kontakter <span class="ct">248</span></div>
+    <div class="lbl">Grupper (träd)</div>
+    <div class="row"><span class="arr">▸</span><span>👪</span> Familjen <span class="ct">32</span></div>
+    <div class="row active"><span class="arr">▾</span><span>🏃</span> IK Löparglädje <span class="ct">24</span></div>
+      <div class="row sub"><span>•</span> Damlag <span class="ct">9</span></div>
+      <div class="row sub"><span>•</span> Herrlag <span class="ct">11</span></div>
+      <div class="row sub"><span>•</span> Styrelsen <span class="ct">4</span></div>
+    <div class="row"><span class="arr">▸</span><span>🏢</span> Jobbet · Acme AB <span class="ct">60</span></div>
+      <div class="row sub" style="opacity:.6"><span>•</span> Avd. Försäljning</div>
+      <div class="row sub" style="opacity:.6"><span>•</span> Avd. Teknik</div>
+    <div class="row"><span class="arr">▸</span><span>🍻</span> Vänner <span class="ct">18</span></div>
+    <div class="row"><span class="arr">▾</span><span>🎓</span> Skola <span class="ct">54</span></div>
+      <div class="row sub"><span>•</span> Grundskolan 9B <span class="ct">1985–88</span></div>
+      <div class="row sub"><span>•</span> Gymnasiet NV <span class="ct">1988–91</span></div>
+    <div class="addg">＋ Ny grupp / undergrupp</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="crumb">Grupper › IK Löparglädje</div>
+    <h1>IK Löparglädje <span style="font-size:13px;color:var(--mut);font-weight:400;">· 24 medlemmar · 3 undergrupper</span></h1>
+    <div class="tabs">
+      <div class="tab active" data-t="med">Medlemmar</div>
+      <div class="tab" data-t="hem">Hemsida</div>
+      <div class="tab" data-t="bok">Årsbok</div>
+      <div class="tab" data-t="kar">Karta</div>
+      <div class="tab" data-t="exp">Export</div>
+    </div>
+
+    <!-- MEDLEMMAR -->
+    <div id="med">
+      <button class="btn pub" style="margin-bottom:12px;">🔗 Skicka ifyllnadslänk — medlemmarna fyller i &amp; sköter sitt eget medlemskap</button>
+      <div class="panel">
+        <table>
+          <tr><th>Namn</th><th>Undergrupp</th><th>Från–t.o.m.</th><th>Även i</th><th>Medlemskap</th><th>Foto</th></tr>
+          <tr><td>Anna Lind</td><td>Styrelsen</td><td>2019– <span style="color:var(--leaf2)">pågående</span></td><td><span class="tag">Familjen</span><span class="tag alt">Vänner</span></td><td><span class="self">✓ sköter själv</span></td><td><span class="dot ok"></span></td></tr>
+          <tr><td>Björn Ek</td><td>Herrlag</td><td>2022–</td><td><span class="tag alt2">Jobbet · Acme</span></td><td><span class="self">✓ sköter själv</span></td><td><span class="dot ok"></span></td></tr>
+          <tr><td>Carla Ros</td><td>Damlag</td><td>2026–</td><td>—</td><td>inbjuden · ej svarat</td><td><span class="dot no"></span></td></tr>
+          <tr><td>Dan Holm</td><td>Herrlag</td><td>2020–</td><td><span class="tag">Familjen</span><span class="tag" style="background:#f3eeda;color:#6b5b00">Grundskolan 9B</span></td><td><span class="self">✓ sköter själv</span></td><td><span class="dot ok"></span></td></tr>
+          <tr><td>Eva Sund</td><td>Damlag</td><td>2018–<b>2026</b> <span style="color:#9a4a3a">avslutad</span></td><td><span class="tag alt">Vänner</span></td><td>sa upp sig 2026-05</td><td><span class="dot no"></span></td></tr>
+        </table>
+        <div class="help">Varje <b>medlemskap har ett från–t.o.m.-datum</b> — så samma modell klarar pågående grupper, avslutade (Eva slutade 2026) och historiska/daterade grupper som skolklasser &amp; alumner (Grundskolan 9B 1985–88). Personen finns en gång i poolen, kan ligga i flera grupper, och sköter sitt eget medlemskap.</div>
+      </div>
+    </div>
+
+    <!-- HEMSIDA -->
+    <div id="hem" class="hide">
+      <div class="panel">
+        <h3 style="margin-top:0">Hemsida för IK Löparglädje</h3>
+        <div class="toggleRow"><span class="tog"></span> Visa undergrupper som egna flikar (Damlag / Herrlag / Styrelsen)</div>
+        <div class="toggleRow"><span class="tog"></span> Visa medlemmar &amp; kommande födelsedagar</div>
+        <div class="toggleRow"><span class="tog off"></span> Visa kartvy på sidan</div>
+        <div class="fld" style="margin-top:12px"><label>Synlighet</label>
+          <div class="seg"><span>Publik</span><span class="on">Hemlig länk + lösen</span><span>Endast medlemmar</span></div></div>
+        <button class="big">✨ Skapa förslag med AI</button>
+      </div>
+    </div>
+
+    <!-- ÅRSBOK -->
+    <div id="bok" class="hide">
+      <div class="cols">
+        <div class="panel" style="width:470px;">
+          <h3 style="margin-top:0">Årsbok</h3>
+          <div class="selbox">📁 Källa: <b>IK Löparglädje</b>. Du kan blanda flera grupper, eller välja enstaka personer ur poolen — grupperna behöver inte höra ihop.</div>
+          <div class="fld"><label>Vilka ska med?</label>
+            <div class="pick"><input type="checkbox" checked> Hela gruppen (24)</div>
+            <div class="pick"><input type="checkbox"> Endast Styrelsen (4)</div>
+            <div class="pick"><input type="checkbox"> + lägg till ur "Familjen" / poolen…</div>
+          </div>
+          <div class="fld"><label>Foton</label>
+            <div class="seg"><span class="on">Med foton</span><span>Utan foton (bara namn/text)</span></div>
+          </div>
+          <div class="fld"><label>Format &amp; innehåll</label>
+            <div class="seg" style="margin-bottom:8px"><span class="on">A4</span><span>Kvadrat</span><span>Liggande</span></div>
+            <div class="toggleRow"><span class="tog"></span> En sida per medlem</div>
+            <div class="toggleRow"><span class="tog"></span> Gruppfoto-uppslag (AI-montage)</div>
+            <div class="toggleRow"><span class="tog off"></span> Karta med var alla bor</div>
+          </div>
+          <button class="big">✨ Skapa förslag med AI</button>
+          <button class="btn pub" style="width:100%;margin-top:10px;">📦 Beställ tryckt årsbok</button>
+        </div>
+        <div style="flex:none;width:300px;">
+          <div class="panel" style="text-align:center;">
+            <div style="display:flex;gap:6px;">
+              <div style="flex:1;aspect-ratio:.72;border-radius:6px;background:linear-gradient(160deg,#FFE800,#FFD200);display:flex;flex-direction:column;justify-content:center;color:#3a3000;font-weight:900;">2026<div style="font-size:11px;">IK LÖPARGLÄDJE</div></div>
+              <div style="flex:1;aspect-ratio:.72;border-radius:6px;background:#fff;border:1px solid var(--line);padding:8px;">
+                <div style="height:48px;background:#EAF3E2;border:1px solid var(--leaf);border-radius:5px;margin-bottom:5px;"></div>
+                <div style="height:6px;background:#eee;border-radius:4px;margin:4px 0;width:70%"></div>
+                <div style="height:6px;background:#eee;border-radius:4px;margin:4px 0;width:90%"></div>
+                <div style="font-size:9px;color:var(--mut);margin-top:5px;">Anna · Styrelsen · f.1991</div>
+              </div>
+            </div>
+            <div class="help">Omslag + en sida per medlem</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KARTA -->
+    <div id="kar" class="hide">
+      <div class="panel">
+        <div class="toggleRow" style="margin-bottom:12px"><span class="tog"></span> Visa alla medlemmar på karta &nbsp;·&nbsp; Filter:
+          <div class="seg" style="margin-left:8px"><span class="on">Alla</span><span>Damlag</span><span>Herrlag</span></div></div>
+        <div class="map">
+          <div class="maptag">🗺️ Google Maps · 24 medlemmar</div>
+          <div class="road" style="left:0;top:46%;width:100%;height:8px;"></div>
+          <div class="road" style="left:38%;top:0;width:8px;height:100%;"></div>
+          <div class="pin" style="left:30%;top:40%;">📍<small>Anna</small></div>
+          <div class="pin" style="left:55%;top:30%;">📍<small>Björn</small></div>
+          <div class="pin" style="left:46%;top:62%;">📍<small>Carla</small></div>
+          <div class="pin" style="left:70%;top:55%;">📍<small>Dan</small></div>
+          <div class="pin" style="left:22%;top:70%;">📍<small>Eva</small></div>
+        </div>
+        <div class="help">Bra för utskick, samåkning till träning, eller "vilka bor nära mig". Kan även läggas in i hemsidan och årsboken.</div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div id="exp" class="hide">
+      <div class="panel">
+        <h3 style="margin-top:0">Export &amp; dela</h3>
+        <div class="fld"><label>Foton</label>
+          <div class="seg"><span class="on">Med foton</span><span>Utan foton</span></div></div>
+        <div class="toggleRow"><span class="tog"></span> Excel / deltagarlista</div>
+        <div class="toggleRow"><span class="tog"></span> vCard (för telefonen)</div>
+        <div class="toggleRow"><span class="tog off"></span> Utskrift: kontaktblad med ansvar &amp; telefon</div>
+        <div class="toggleRow"><span class="tog off"></span> RSVP-dashboard</div>
+        <div class="help">Samma val gäller hela poolen eller en vald grupp/undergrupp.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+  const tabs=document.querySelectorAll('.tab');
+  const ids=['med','hem','bok','kar','exp'];
+  tabs.forEach(tb=>tb.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active')); tb.classList.add('active');
+    const t=tb.dataset.t; ids.forEach(i=>document.getElementById(i).classList.toggle('hide',i!==t));
+  }));
+  document.querySelectorAll('.tog').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('off')));
+  document.querySelectorAll('.seg').forEach(s=>s.querySelectorAll('span').forEach(sp=>sp.addEventListener('click',()=>{
+    s.querySelectorAll('span').forEach(x=>x.classList.remove('on')); sp.classList.add('on');
+  })));
+</script>
+</body></html>
